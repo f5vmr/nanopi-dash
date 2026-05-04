@@ -9,7 +9,9 @@ app = Flask(__name__)
 # Permissions on that file/location are svxlink:svxlink with mode 0765.
 # If the webserver owns/accesses the file, it should run as svxlink:svxlink too.
 CONFIG_FILE = '/etc/svxlink/svxlink.conf'
-
+EVENT_SOURCE_DIR = '/usr/share/svxlink/events.d'
+EVENT_DEST_DIR = '/usr/share/svxlink/events.d/local'
+EVENT_FILES = ['Logic.tcl', 'RepeaterLogicType.tcl']
 # Standard CTCSS frequencies
 CTCSS_FREQUENCIES = [
     67.0, 69.3, 71.9, 74.4, 77.0, 79.7, 82.5, 85.4, 88.5, 91.5, 94.8, 97.4, 100.0,
@@ -403,4 +405,4 @@ def restart():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
