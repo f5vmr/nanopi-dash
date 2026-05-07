@@ -5,10 +5,11 @@ import shutil
 from collections import OrderedDict
 
 app = Flask(__name__)
-# In production, the live configuration file is at /etc/svxlink/svxlink.conf
-# Permissions on that file/location are svxlink:svxlink with mode 0765.
-# If the webserver owns/accesses the file, it should run as svxlink:svxlink too.
-CONFIG_FILE = '/etc/svxlink/svxlink.conf'
+# In production, the read-only base configuration is at /etc/svxlink/svxlink.orig
+# The live configuration file is written to /etc/svxlink.conf.
+# Permissions on that location should be svxlink:svxlink with mode 0765.
+CONFIG_FILE = '/etc/svxlink.conf'
+ORIG_CONFIG_FILE = '/etc/svxlink/svxlink.orig'
 EVENT_SOURCE_DIR = '/usr/share/svxlink/events.d'
 EVENT_DEST_DIR = '/usr/share/svxlink/events.d/local'
 EVENT_FILES = ['Logic.tcl', 'RepeaterLogicType.tcl']
@@ -37,6 +38,9 @@ def validate_callsign(callsign):
 
 
 def parse_config(filename):
+    if filename == CONFIG_FILE and not os.path.exists(filename) and os.path.exists(ORIG_CONFIG_FILE):
+        filename = ORIG_CONFIG_FILE
+
     preamble = []
     sections = OrderedDict()
     current_section = None
@@ -170,15 +174,13 @@ def modify_logic_tcl(tone_type, tone_freq=None):
 
 
 def save_config(filename, config):
-    shutil.copy(filename, filename + '.bak')
     with open(filename, 'w') as f:
         f.write(serialize_config(config))
 
 
 def restore_backup(filename):
-    backup_file = filename + '.bak'
-    if os.path.exists(backup_file):
-        shutil.copy(backup_file, filename)
+    if os.path.exists(ORIG_CONFIG_FILE):
+        shutil.copy(ORIG_CONFIG_FILE, filename)
         return True
     return False
 
