@@ -212,6 +212,8 @@ def save_config(filename, config):
 
 def restore_backup(filename):
     if os.path.exists(ORIG_CONFIG_FILE):
+        if os.path.exists(filename):
+            os.remove(filename)
         shutil.copy(ORIG_CONFIG_FILE, filename)
         if filename == CONFIG_FILE:
             set_config_permissions(filename)
