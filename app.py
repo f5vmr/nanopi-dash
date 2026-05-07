@@ -177,7 +177,7 @@ def modify_logic_tcl(tone_type, tone_freq=None):
 
 
 def save_config(filename, config):
-    os.chmod(filename, 0o765)
+    
     with open(filename, 'w') as f:
         f.write(serialize_config(config))
 
@@ -185,6 +185,7 @@ def save_config(filename, config):
 def restore_backup(filename):
     if os.path.exists(ORIG_CONFIG_FILE):
         shutil.copy(ORIG_CONFIG_FILE, filename)
+        os.chmod(filename, 0o765)
         return True
     return False
 
