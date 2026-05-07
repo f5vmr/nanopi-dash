@@ -4,29 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SvxLink Reflector Connection</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
-        h1 { color: #333; }
-        form { display: inline-block; text-align: left; width: 100%; max-width: 500px; }
-        label { display: block; margin-top: 10px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 8px; margin-top: 5px; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 20px; }
-        button:hover { background-color: #45a049; }
-        .note { margin-top: 15px; color: #555; }
-        .error { color: red; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('css_file', filename='site.css') }}">
 </head>
 <body>
-    <h1>Reflector Connection</h1>
-    <p>Do you wish to connect to <strong>north.america.svxlink.net</strong>?</p>
+    <main class="page">
+        <section class="card">
+            <h1>Reflector Connection</h1>
+            <p>Do you wish to connect to <strong>north.america.svxlink.net</strong>?</p>
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
     <form action="/connect" method="post">
-        <input type="radio" id="yes" name="connect" value="yes" checked>
-        <label for="yes">Yes, I will subscribe manually</label><br>
-        <input type="radio" id="no" name="connect" value="no">
-        <label for="no">No, continue without connecting</label><br>
+        <div class="option-group">
+            <div class="radio-row">
+                <input type="radio" id="yes" name="connect" value="yes" checked>
+                <label for="yes">Yes, I will subscribe manually</label>
+            </div>
+            <div class="radio-row">
+                <input type="radio" id="no" name="connect" value="no">
+                <label for="no">No, continue without connecting</label>
+            </div>
+        </div>
 
         <div class="note">
             You must visit the following site yourself, subscribe, and obtain the password there.
@@ -35,10 +33,14 @@
             <a href="https://north.america.svxlink.net" target="_blank">https://north.america.svxlink.net</a>
         </div>
 
-        <label for="password">Subscription password (enter after subscribing):</label>
-        <input type="text" id="password" name="password" placeholder="Enter 16-character password" maxlength="16" style="font-family: monospace;">
+        <div class="field-group">
+            <label class="label" for="password">Subscription password (enter after subscribing):</label>
+            <input class="input-field" type="text" id="password" name="password" placeholder="Enter 16-character password" maxlength="16" autocomplete="off">
+        </div>
 
-        <button type="submit">Continue</button>
+        <button class="button-primary" type="submit">Continue</button>
     </form>
+</section>
+</main>
 </body>
 </html>

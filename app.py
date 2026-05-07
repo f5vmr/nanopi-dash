@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 import os
 import re
 import shutil
@@ -269,6 +269,11 @@ def uncomment_kv(config, section_name, key, value=None):
 @app.route('/')
 def index():
     return redirect('/setup')
+
+
+@app.route('/css/<path:filename>')
+def css_file(filename):
+    return send_from_directory(os.path.join(app.root_path, 'css'), filename, mimetype='text/css')
 
 
 @app.route('/setup', methods=['GET', 'POST'])

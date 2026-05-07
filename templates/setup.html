@@ -4,70 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SvxLink Setup</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
-        h1 { color: #333; }
-        form { display: inline-block; text-align: left; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 20px; }
-        button:hover { background-color: #45a049; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('css_file', filename='site.css') }}">
 </head>
 <body>
-    <h1>SvxLink Node Setup</h1>
-    <p>Please select the type of node you wish to create and enter the callsign for the node/repeater.</p>
+    <main class="page">
+        <section class="card">
+            <h1>SvxLink Node Setup</h1>
+            <p>Please select the type of node you wish to create and enter the callsign for the node/repeater.</p>
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
     <form id="setup-form" action="/setup" method="post" onsubmit="return confirmCallsign()">
-        <input type="radio" id="simplex" name="node_type" value="simplex" {% if node_type != 'repeater' %}checked{% endif %}>
-        <label for="simplex">Simplex Node</label><br>
-        <input type="radio" id="repeater" name="node_type" value="repeater" {% if node_type == 'repeater' %}checked{% endif %}>
-        <label for="repeater">Repeater Node</label><br>
-        <div style="margin-top: 15px;">
-            <label for="callsign">Callsign:</label><br>
-            <input type="text" id="callsign" name="callsign" placeholder="Enter standard callsign" style="width: 100%; padding: 8px; margin-top: 5px;" oninput="this.value = this.value.toUpperCase();">
+        <div class="option-group">
+            <div class="radio-row">
+                <input type="radio" id="simplex" name="node_type" value="simplex" {% if node_type != 'repeater' %}checked{% endif %}>
+                <label for="simplex">Simplex Node</label>
+            </div>
+            <div class="radio-row">
+                <input type="radio" id="repeater" name="node_type" value="repeater" {% if node_type == 'repeater' %}checked{% endif %}>
+                <label for="repeater">Repeater Node</label>
+            </div>
         </div>
-        <div style="margin-top: 15px; text-align: left;">
-            <label>Squelch method:</label><br>
-            <input type="radio" id="squelch_gpiod" name="squelch_method" value="gpiod" {% if squelch_method == 'gpiod' %}checked{% endif %}>
-            <label for="squelch_gpiod">GPIOD alone</label><br>
-            <div id="gpiod-info" style="margin-left: 20px; display: none; margin-top: 5px; color: #555;">
+        <div class="field-group">
+            <label class="label" for="callsign">Callsign:</label>
+            <input class="input-field" type="text" id="callsign" name="callsign" placeholder="Enter standard callsign" oninput="this.value = this.value.toUpperCase();">
+        </div>
+        <div class="form-section">
+            <div class="label">Squelch method:</div>
+            <div class="radio-row">
+                <input type="radio" id="squelch_gpiod" name="squelch_method" value="gpiod" {% if squelch_method == 'gpiod' %}checked{% endif %}>
+                <label for="squelch_gpiod">GPIOD alone</label>
+            </div>
+            <div id="gpiod-info" class="toggle-details hidden">
                 Rx1 Squelch is set to Line 203 Pin 7 as Active High.<br>
                 Tx1 PTT pin is Line 6 Pin 12.
             </div>
-            <input type="radio" id="squelch_gpiod_ctcss" name="squelch_method" value="gpiod_ctcss" {% if squelch_method == 'gpiod_ctcss' %}checked{% endif %}>
-            <label for="squelch_gpiod_ctcss">GPIOD and CTCSS</label><br>
-            <input type="radio" id="squelch_ctcss" name="squelch_method" value="ctcss" {% if squelch_method == 'ctcss' %}checked{% endif %}>
-            <label for="squelch_ctcss">CTCSS alone</label><br>
-            <div id="ctcss-settings" style="margin-left: 20px; display: none; margin-top: 5px;">
-                <label for="ctcss_freq">CTCSS Frequency (Hz):</label><br>
-                <select id="ctcss_freq" name="ctcss_freq" style="width: 100%; padding: 8px; margin-top: 5px;">
+            <div class="radio-row">
+                <input type="radio" id="squelch_gpiod_ctcss" name="squelch_method" value="gpiod_ctcss" {% if squelch_method == 'gpiod_ctcss' %}checked{% endif %}>
+                <label for="squelch_gpiod_ctcss">GPIOD and CTCSS</label>
+            </div>
+            <div class="radio-row">
+                <input type="radio" id="squelch_ctcss" name="squelch_method" value="ctcss" {% if squelch_method == 'ctcss' %}checked{% endif %}>
+                <label for="squelch_ctcss">CTCSS alone</label>
+            </div>
+            <div id="ctcss-settings" class="toggle-details hidden">
+                <label class="label" for="ctcss_freq">CTCSS Frequency (Hz):</label>
+                <select class="select-field" id="ctcss_freq" name="ctcss_freq">
                     {% for freq in ctcss_frequencies %}
                     <option value="{{ freq }}" {% if ctcss_freq == freq|string %}selected{% endif %}>{{ freq }} Hz</option>
                     {% endfor %}
-                </select><br>
-                <input type="checkbox" id="ctcss_tx" name="ctcss_tx" value="yes" {% if ctcss_tx == 'yes' %}checked{% endif %}>
-                <label for="ctcss_tx">Require CTCSS on transmit as well as receive</label>
+                </select>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="ctcss_tx" name="ctcss_tx" value="yes" {% if ctcss_tx == 'yes' %}checked{% endif %}>
+                    <label for="ctcss_tx">Require CTCSS on transmit as well as receive</label>
+                </div>
             </div>
         </div>
-        <div style="margin-top: 15px; text-align: left;">
-            <label>Courtesy tone:</label><br>
-            <input type="radio" id="tone_none" name="tone_type" value="none" {% if tone_type == 'none' %}checked{% endif %}>
-            <label for="tone_none">No tone</label><br>
-            <input type="radio" id="tone_beep" name="tone_type" value="beep" {% if tone_type == 'beep' %}checked{% endif %}>
-            <label for="tone_beep">Beep (800 ms, choose frequency)</label><br>
-            <div id="beep-settings" style="margin-left: 20px; display: none; margin-top: 5px;">
-                <label for="tone_freq">Frequency (Hz):</label><br>
-                <input type="number" id="tone_freq" name="tone_freq" min="600" max="1000" value="{{ tone_freq }}" style="width: 100%; padding: 8px; margin-top: 5px;">
+        <div class="form-section">
+            <div class="label">Courtesy tone:</div>
+            <div class="radio-row">
+                <input type="radio" id="tone_none" name="tone_type" value="none" {% if tone_type == 'none' %}checked{% endif %}>
+                <label for="tone_none">No tone</label>
+            </div>
+            <div class="radio-row">
+                <input type="radio" id="tone_beep" name="tone_type" value="beep" {% if tone_type == 'beep' %}checked{% endif %}>
+                <label for="tone_beep">Beep (800 ms, choose frequency)</label>
+            </div>
+            <div id="beep-settings" class="toggle-details hidden">
+                <label class="label" for="tone_freq">Frequency (Hz):</label>
+                <input class="input-field" type="number" id="tone_freq" name="tone_freq" min="600" max="1000" value="{{ tone_freq }}">
                 <small>Choose a frequency from 600 to 1000 Hz.</small>
             </div>
-            <input type="radio" id="tone_morse_t" name="tone_type" value="morse_t" {% if tone_type == 'morse_t' %}checked{% endif %}>
-            <label for="tone_morse_t">Morse code "T" (dash)</label><br>
-            <input type="radio" id="tone_morse_k" name="tone_type" value="morse_k" {% if tone_type == 'morse_k' %}checked{% endif %}>
-            <label for="tone_morse_k">Morse code "K" (dash dot dash)</label><br>
+            <div class="radio-row">
+                <input type="radio" id="tone_morse_t" name="tone_type" value="morse_t" {% if tone_type == 'morse_t' %}checked{% endif %}>
+                <label for="tone_morse_t">Morse code "T" (dash)</label>
+            </div>
+            <div class="radio-row">
+                <input type="radio" id="tone_morse_k" name="tone_type" value="morse_k" {% if tone_type == 'morse_k' %}checked{% endif %}>
+                <label for="tone_morse_k">Morse code "K" (dash dot dash)</label>
+            </div>
         </div>
-        <button type="submit">Continue</button>
+        <button class="button-primary" type="submit">Continue</button>
     </form>
+</section>
+</main>
     <script>
         function confirmCallsign() {
             const callsignInput = document.getElementById('callsign');
