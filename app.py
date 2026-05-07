@@ -276,6 +276,11 @@ def css_file(filename):
     return send_from_directory(os.path.join(app.root_path, 'css'), filename, mimetype='text/css')
 
 
+@app.route('/images/<path:filename>')
+def image_file(filename):
+    return send_from_directory(os.path.join(app.root_path, 'images'), filename)
+
+
 @app.route('/setup', methods=['GET', 'POST'])
 def setup():
     error = None

@@ -36,10 +36,37 @@ body {
 
 h1 {
   margin-top: 0;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
   font-size: clamp(2rem, 2.8vw, 2.5rem);
   line-height: 1.05;
   color: #1f3754;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 1.45rem;
+}
+
+.page-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 14px;
+  background: #eef3fb;
+  padding: 10px;
+  border: 1px solid #d7e2f0;
+}
+
+.page-header .page-heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.page-header p {
+  margin: 0;
+  color: #4a5869;
 }
 
 p {
