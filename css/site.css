@@ -50,9 +50,9 @@ h1 {
 }
 
 .page-icon {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+  width: 572px;
+  height: 190px;
+  min-width: 100px;
   border-radius: 14px;
   background: #eef3fb;
   padding: 10px;
