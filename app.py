@@ -42,7 +42,7 @@ def validate_callsign(callsign):
 def parse_config(filename):
     if filename == CONFIG_FILE and not os.path.exists(filename) and os.path.exists(ORIG_CONFIG_FILE):
         filename = ORIG_CONFIG_FILE
-    os.chmod(filename, 0o765)
+    
     preamble = []
     sections = OrderedDict()
     current_section = None
