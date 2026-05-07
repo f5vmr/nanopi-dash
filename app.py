@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, send_from_directory
+import grp
 import os
+import pwd
 import re
 import shutil
 from collections import OrderedDict
 
 app = Flask(__name__)
 # In production, the read-only base configuration is at /etc/svxlink/svxlink.orig
-# The live configuration file is written to /etc/svxlink.conf.
+# The live configuration file is written to /etc/svxlink/svxlink.conf.
 # Permissions on that location should be svxlink:svxlink with mode 0765.
 CONFIG_FILE = '/etc/svxlink/svxlink.conf'
 ORIG_CONFIG_FILE = '/etc/svxlink/svxlink.orig'
@@ -176,16 +178,28 @@ def modify_logic_tcl(tone_type, tone_freq=None):
         f.write(content)
 
 
+def set_config_permissions(filename):
+    try:
+        uid = pwd.getpwnam('svxlink').pw_uid
+        gid = grp.getgrnam('svxlink').gr_gid
+        os.chown(filename, uid, gid)
+    except KeyError:
+        pass
+    os.chmod(filename, 0o640)
+
+
 def save_config(filename, config):
-    
     with open(filename, 'w') as f:
         f.write(serialize_config(config))
+    if filename == CONFIG_FILE:
+        set_config_permissions(filename)
 
 
 def restore_backup(filename):
     if os.path.exists(ORIG_CONFIG_FILE):
         shutil.copy(ORIG_CONFIG_FILE, filename)
-        os.chmod(filename, 0o765)
+        if filename == CONFIG_FILE:
+            set_config_permissions(filename)
         return True
     return False
 
