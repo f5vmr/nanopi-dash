@@ -49,8 +49,16 @@ def parse_config(filename):
     sections = OrderedDict()
     current_section = None
 
-    with open(filename, 'r') as f:
-        
+    try:
+        f = open(filename, 'r')
+    except PermissionError:
+        if filename == CONFIG_FILE and os.path.exists(ORIG_CONFIG_FILE):
+            filename = ORIG_CONFIG_FILE
+            f = open(filename, 'r')
+        else:
+            raise
+
+    with f:
         for line in f:
             raw = line.rstrip('\n')
             stripped = raw.strip()
@@ -182,10 +190,17 @@ def set_config_permissions(filename):
     try:
         uid = pwd.getpwnam('svxlink').pw_uid
         gid = grp.getgrnam('svxlink').gr_gid
-        os.chown(filename, uid, gid)
+        try:
+            os.chown(filename, uid, gid)
+        except PermissionError:
+            pass
     except KeyError:
         pass
-    os.chmod(filename, 0o640)
+
+    try:
+        os.chmod(filename, 0o640)
+    except PermissionError:
+        pass
 
 
 def save_config(filename, config):
