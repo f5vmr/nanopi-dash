@@ -33,16 +33,37 @@
         </div>
 
         <div class="note">
-            You must visit the following site yourself, subscribe, and obtain the password there.
+            You must visit the following sites yourself, subscribe, and obtain the password there.
         </div>
         <div class="note">
             <a href="https://north.america.svxlink.net" target="_blank">https://north.america.svxlink.net</a>
         </div>
 
         <div class="field-group">
-            <label class="label" for="password">Subscription password (enter after subscribing):</label>
-            <input class="input-field" type="text" id="password" name="password" placeholder="Enter 16-character password" maxlength="16" autocomplete="off">
-        </div>
+    <label class="label" for="reflector">
+        Select SvxLink Reflector:
+    </label>
+
+    <select class="input-field" id="reflector" name="reflector">
+
+        <option value="north.america.svxlink.net|35300|https://north.america.svxlink.net">
+            North America Reflector
+        </option>
+
+        <option value="uk.wide.svxlink.uk|35300|https://ukwide.svxlink.net">
+            UKWide Reflector
+        </option>
+
+        <option value="australia.svxlink.net|35300|https://au.svxlink.net">
+            Australia / New Zealand Reflector
+        </option>
+
+        <option value="yorkshire.svxlink.uk|5310|https://svxlink.qsos.uk/">
+            YorkshireNet Reflector
+        </option>
+
+    </select>
+</div>
 
         <button class="button-primary" type="submit">Continue</button>
     </form>

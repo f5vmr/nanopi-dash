@@ -424,43 +424,60 @@ def setup():
 
 
 @app.route('/connect', methods=['GET', 'POST'])
-def connect():
-    error = None
-    if request.method == 'POST':
-        answer = request.form.get('connect')
-        password = request.form.get('password', '').strip()
-        config = parse_config(CONFIG_FILE)
 
-        if answer == 'yes':
-            if not password:
-                error = 'Please enter the 16-character subscription password from north.america.svxlink.net.'
-            elif len(password) != 16:
-                error = 'Password must be exactly 16 characters long.'
-            else:
-                set_kv(config, 'ReflectorLogic', 'HOSTS', 'north.america.svxlink.net', enabled=True)
-                uncomment_kv(config, 'GLOBAL', 'LINKS', 'ReflectorLink')
-                ensure_comma_value(config, 'GLOBAL', 'LOGICS', 'ReflectorLogic')
-                set_kv(config, 'ReflectorLogic', 'AUTH_KEY', password, enabled=True)
-                save_config(CONFIG_FILE, config)
-                sync_event_files()
-                return redirect('/done')
-        else:
-            return redirect('/done')
-
-    return render_template('connect.html', error=error)
 
 
 @app.route('/done')
 def done():
     return render_template('done.html')
+def connect():
+    error = None
+    if request.method == 'POST':
+        answer = request.form.get('connect')
+        password = request.form.get('password', '').strip()
+
+        reflector_data = request.form.get('reflector', '')
+        config = parse_config(CONFIG_FILE)
+
+        if answer == 'yes':
+
+            if not reflector_data:
+                error = 'Please select a reflector.'
+
+            else:
+                try:
+                    host, port, web_url = reflector_data.split('|')
+                except ValueError:
+                    error = 'Invalid reflector selection.'
+
+            if not password and not error:
+                error = 'Please enter the 16-character subscription password from the reflector site.'
+
+            elif len(password) != 16 and not error:
+                error = 'Password must be exactly 16 characters long.'
+
+            if not error:
+                set_kv(config, 'ReflectorLogic', 'HOSTS', host, enabled=True)
+                set_kv(config, 'ReflectorLogic', 'HOST_PORT', port, enabled=True)
+
+                uncomment_kv(config, 'GLOBAL', 'LINKS', 'ReflectorLink')
+                ensure_comma_value(config, 'GLOBAL', 'LOGICS', 'ReflectorLogic')
+
+                set_kv(config, 'ReflectorLogic', 'AUTH_KEY', password, enabled=True)
+
+                save_config(CONFIG_FILE, config)
+                sync_event_files()
+
+                return redirect('/done')
+
+        else:
+            return redirect('/done')
+
+    return render_template('connect.html', error=error)
 
 @app.route('/talkgroup')
 def talkgroup():
     return render_template('talkgroup.html')
-
-@app.route('/reflector')
-def reflector():
-    return render_template('reflector.html')
 
 @app.route('/echolink')
 def echolink():
