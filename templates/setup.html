@@ -105,14 +105,16 @@
     <script>
         function confirmCallsign() {
             const callsignInput = document.getElementById('callsign');
-            const callsignValue = callsignInput.value.trim().toUpperCase();
-            if (!callsignValue) {
-                alert('Please enter a callsign before continuing.');
-                callsignInput.focus();
-                return false;
-            }
+            const callsignValue = callsignInput.value.trim().toUpper    Case();
+
+        if (!callsignValue) {   
+            alert('Please enter a callsign before continuing.');    
+            callsignInput.focus();
+            return false;
+        }
+
             callsignInput.value = callsignValue;
-            return confirm(`You entered callsign ${callsignValue}.\nAre you sure you want to continue?`);
+            return true;
         }
 
         function updateToneSettings() {
